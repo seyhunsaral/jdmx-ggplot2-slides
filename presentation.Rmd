@@ -1,0 +1,50 @@
+---
+title: "Data Visualization in R with ggplot2"
+author: "Ali Seyhun Saral"
+date: "2019-06-29" 
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(ggrepel)
+presentation_theme  <- theme_gray() + 
+theme(axis.text = element_text(size = 18),
+      axis.title = element_text(size = 18))
+     
+theme_set(presentation_theme)
+
+```
+# Test Title
+## Test subtitle
+
+* This is something
+  + This is something else
+
+---
+
+
+```{r, echo = FALSE}
+happiness_data  <- readRDS("./happiness_data.rds")
+```
+# Data 
+* World Happiness Report by UN Sustainable Development Solutions Network
+
+```{r}
+ head(happiness_data)
+```
+---
+# Our first `ggplot2` graph
+The relationship between `happiness` and `gdp_per_capita`.
+```{r, fig.height=6, fig.width=8, echo = FALSE}
+ggplot(happiness_data, aes(gdp_per_capita, happiness)) +
+geom_point(color = "dodgerblue") +
+labs(x = "GDP per capita",
+     y = "Happiness Score") 
+     
+```
