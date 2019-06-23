@@ -13,6 +13,8 @@ output:
 ```{r setup, include=FALSE}
 library(ggplot2)
 library(ggrepel)
+library(dplyr)
+library(ggthemes)
 presentation_theme  <- theme_gray() + 
 theme(axis.text = element_text(size = 18),
       axis.title = element_text(size = 18))
@@ -20,14 +22,110 @@ theme(axis.text = element_text(size = 18),
 theme_set(presentation_theme)
 
 ```
-# Test Title
-## Test subtitle
+# Data Visualization in R
+## 
 
 * This is something
   + This is something else
 
 ---
 
+# `ggplot2`: The Grammar of Graphics
+* Wilkinson(2005): What is a statistical graph?
+
+
+  * _A statistical graphic is a __mapping__ from data to __aesthetic__ attributes (color, shape, size) of __geometric objects__ (points, lines, bars)_. [Wickham(2005)]
+  
+  
+  * Set of independent components:
+    * Data 
+    * Layers
+      * Geometric objects (geoms)
+      * Statistical Transformations (stats)
+    * Scales (scale)
+    * Coordinate system (coord)
+    * Facet (facet)
+    * Theme (theme)
+
+---
+## Mappings
+
+```{r, echo=FALSE, fig.cap="A caption", out.width = '100%'}
+knitr::include_graphics("./img/flow.png")
+```
+```{r, echo = FALSE, fig.width = 9, fig.height = 6}
+set.seed(2019)
+my_data  <- data.frame( class = c(rep("A",10),rep("B",10)),
+                        study_hours = round(rnorm(20, mean = 24, sd = 6)))
+
+my_data$score  <- round(my_data$study_hours * rnorm(20, mean = 2, sd = 0.3)) + round(if_else(my_data$class == "A", rnorm(20, mean = 8, sd = 2), 0))
+```
+.pull-left[
+```{r}
+head(my_data)
+```
+]
+.pull-right[
+
+```{r, echo = FALSE, fig.width = 4, fig.height = 3}
+ggplot(my_data, aes(x = study_hours, y = score, color = class)) +
+#  geom_jitter(size = 3) +
+  geom_point()  +
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
+  theme_bw() 
+#  geom_smooth(method = "lm" )
+```
+]
+---
+
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9}
+nobel_winners <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-14/nobel_winners.csv")
+
+
+# Extracting the year from birthdate
+nobel_winners  <- nobel_winners  %>%
+  mutate(birth_year = format(nobel_winners$birth_date, '%Y'))  %>%
+# Calculating the age
+  mutate(age_awarded = prize_year - as.numeric(birth_year))
+
+
+nobel_winners_summary  <- nobel_winners %>%
+  group_by(category)  %>%
+  summarise( mean_age_awarded = mean(age_awarded, na.rm = TRUE), sd_age_awarded = sd(age_awarded, na.rm = TRUE) )  %>%
+  arrange(mean_age_awarded) 
+
+
+#nobel_winners  %>% summarise( mean = mean(age_awarded, na.rm = TRUE), min = min(age_awarded, na.rm = TRUE), max = max(age_awarded, na.rm = TRUE))  
+
+
+nobel_winners  <- nobel_winners  %>% mutate( category = factor(category, levels = nobel_winners_summary$category))
+nobel_winners_summary  <- nobel_winners_summary  %>% mutate( category = factor(category, levels = nobel_winners_summary$category))
+
+ggplot(nobel_winners, aes(x = category, y = age_awarded, color = category))+
+      geom_hline( yintercept = mean(nobel_winners$age_awarded, na.rm = TRUE), color = "gray20", linetype = "dashed") +
+geom_jitter(alpha = 0.3, width = 0.1, height = 0, size = 2) +
+  geom_point(data = nobel_winners_summary, aes(y = mean_age_awarded, fill = category), color = "black", size = 10, pch=21, alpha = 0.9) +
+    geom_text_repel(data = filter(nobel_winners, age_awarded == min(nobel_winners$age_awarded, na.rm = TRUE) | age_awarded == max(nobel_winners$age_awarded, na.rm = TRUE)), aes(label = full_name),
+                  color = "black",
+                  xlim = c(4.5,5.5),
+                  arrow = arrow(length = unit(0.03, "npc"))) +
+#  geom_line(ylim = 40) +
+    labs(title = "Nobel Prize winners by age and discipline",
+         subtitle = "The age of prize winners at the time they won the prize",
+         y = "Age awarded", x = "") +
+  theme_economist() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line ( size = .5)) +  
+  guides(fill = FALSE, color = FALSE) +
+  scale_y_continuous( limits = c(15,90), breaks = seq(10,90,10)) +
+  annotate("text", x = 7.2, y = 28, label = "Average of all disciplines") +
+  geom_curve(x = 7, y = 30, xend = 6.7, yend = 58, curvature = 0.2, size = 0.3, color = "black", arrow = arrow(length = unit(0.03, "npc"))) +
+  annotate("text", x = 7.5, y = 28, label="") + # this is a trick
+  coord_flip() 
+  ```
+---
 
 ```{r, echo = FALSE}
 happiness_data  <- readRDS("./happiness_data.rds")
@@ -48,3 +146,4 @@ labs(x = "GDP per capita",
      y = "Happiness Score") 
      
 ```
+
