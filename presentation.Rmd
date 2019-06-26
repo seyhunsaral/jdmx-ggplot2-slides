@@ -4,6 +4,7 @@ author: "Ali Seyhun Saral"
 institute: "Jdmx 2019"
 date: "2019-06-29" 
 output:
+#    html_document
   xaringan::moon_reader:
     css: [default, shinobi, tamu-fonts]
     lib_dir: libs
@@ -11,7 +12,9 @@ output:
       highlightStyle: github
       countIncrementalSlides: false
 ---
+
 <link href="https://fonts.googleapis.com/css?family=Anton|Average|Fjalla+One|Gravitas+One|Montserrat&display=swap" rel="stylesheet"> 
+
 ```{r setup, include=FALSE}
 library(ggplot2)
 library(dplyr)
@@ -23,7 +26,7 @@ library(ggsci)
 #      axis.title = element_text(size = 18))
      
 #theme_set(presentation_theme)
-knitr::opts_chunk$set(dpi=300)
+knitr::opts_chunk$set(dpi=300, warning = FALSE, fig.align = 'center', message = FALSE)
 options(timeout= 4000000) 
 
 ```
@@ -270,7 +273,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
     geom_point(aes( color = continent)) +
-    scale_y_continuous( limits = c(0,8), breaks = 1:8) 
+    scale_y_continuous( limits = c(0,8), breaks = 0:8) 
 ```
 `seq()` function can be handy to set axis breaks.
 ---
@@ -279,7 +282,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
     geom_point(aes( color = continent)) +
-    scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+    scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
       scale_x_continuous(name = "Log GDP per Capita")
 ```
 `seq()` function can be handy to set axis breaks.
@@ -315,7 +318,7 @@ scale_discrete_manual()
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes( color = continent)) +
-  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
     scale_x_continuous(name = "Log GDP per Capita") +
     scale_color_brewer(name = "Continent", palette = "Set1")
 ```
@@ -325,7 +328,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes( color = continent)) +
-  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
     scale_x_continuous(name = "Log GDP per Capita") +
     scale_color_manual(name = "Continent",
                        values = c("blue", "orange", "red", "purple", "cyan"))
@@ -336,7 +339,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes( color = continent)) +
-  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
     scale_x_continuous(name = "Log GDP per Capita") +
     scale_color_manual(name = "Continent",
                        values = c("blue", "orange", "red", "purple", "cyan"),
@@ -352,7 +355,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes( color = continent)) +
   geom_smooth() +
-  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
   scale_x_continuous(name = "Log GDP per Capita") +
   scale_color_brewer(palette = "Set1")
 ```
@@ -363,7 +366,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes( color = continent)) +
   geom_smooth(method = "lm") +
-  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
   scale_x_continuous(name = "Log GDP per Capita") +
   scale_color_brewer(palette = "Set1")
 ```
@@ -374,7 +377,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes(color = continent), alpha = 0.5) +
   geom_smooth(method = "lm", se= FALSE, color = "black") +
-  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
   scale_x_continuous(name = "Log GDP per Capita") +
   scale_color_brewer(palette = "Set1") +
   theme_bw()
@@ -387,10 +390,180 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes(color = continent), alpha = 0.5) +
   geom_smooth(method = "lm", se= FALSE, color = "black") +
-  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
   scale_x_continuous(name = "Log GDP per Capita") +
   scale_color_brewer(palette = "Set1") +
   facet_grid( ~ continent) +
   theme_bw()
 
 ```
+---
+# Bar charts in ggplot
+* `geom_col()`: General mapping
+    * x: categorical variable
+    * y: bar height
+    
+* `geom_bar()`: Used for counting instances in data
+    * x: categorical variable
+---
+# Bar charts in ggplot : geom_col()
+```{r}
+library(dplyr)
+happiness_data_subset  <- happiness_data  %>% filter( country %in% c("Italy", "Germany", "Turkey") )
+head(happiness_data_subset)
+```
+---
+# Bar charts in ggplot : geom_col()
+```{r, out.width = '50%'}
+ggplot(happiness_data_subset, aes(x = country, y = happiness)) +
+  geom_col()
+```
+---
+# Bar charts in ggplot : geom_col()
+```{r, out.width = '50%'}
+library(dplyr)
+ggplot(happiness_data_subset, aes(x = country, y = happiness)) +
+  geom_point(size = 4) +
+  scale_y_continuous(limits = c(0,8))
+
+```
+---
+# Nobel Prize 
+* ex2.R
+```{r}
+head(nobel_winners)
+```
+---
+# Bar Charts: geom_bar()
+* Let's create our first plot
+* Note that geom_bar automatically counts the number of instances (default behavior)
+
+```{r, out.width = '50%'}
+ggplot(nobel_winners, aes(x = category))+
+  geom_bar()
+
+```
+---
+# Bar Charts: geom_bar()
+* Two types of bar charts in ggplot: `geom_bar()` and `geom_col`.
+* `geom_col()` is a simple 
+* Let's create our first plot
+* Note that geom_bar automatically counts the number of instances (default behavior)
+
+```{r, out.width = '50%'}
+ggplot(nobel_winners, aes(x = category, fill = gender))+
+  geom_bar()
+
+```
+---
+# Investigating the data
+What are the NA's?
+
+```{r}
+nobel_winners  %>% filter(is.na(gender))  %>% select(full_name)
+
+```{r}
+library(dplyr)
+unique(nobel_winners$laureate_type)
+```
+---
+# Let's take individual laureates only 
+```{r}
+nobel_winners_ind  <- nobel_winners  %>% filter(laureate_type == "Individual")
+```
+---
+# Let's take individual laureates only 
+```{r, out.width = '50%'}
+ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
+  geom_bar()
+```
+---
+# Different possibilities
+```{r, out.width = '50%'}
+ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
+  geom_bar(position = "dodge")
+```
+---
+# # Different possibilities
+```{r, out.width = '50%'}
+ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
+  geom_bar(position = "fill")
+```
+---
+# A continous and a categorical variable: geom_boxplot()
+```{r, out.width = '50%'}
+ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
+  geom_point()
+```
+---
+# Layering up: geom_jitter() and geom_boxplot()
+```{r, out.width = '50%'}
+ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
+  geom_jitter() +
+  geom_boxplot(fill = NA, color = "blue", outlier.shape = NA)
+```
+---
+```{r, out.width = '50%'}
+ggplot(nobel_winners, aes(x = age_awarded)) +
+  geom_histogram() +
+  facet_grid(category ~ .)
+
+```
+---
+
+```{r, out.width = '50%'}
+ggplot(nobel_winners, aes(x = age_awarded)) +
+  geom_density(fill = "blue") +
+  facet_grid(category ~ .)
+
+```
+---
+
+
+```{r, out.width = '50%'}
+nobel_winners  %>%
+  filter(!is.na(age_awarded))  %>%
+  group_by(prize_year)  %>%
+  summarise( mean_age = mean(age_awarded))  %>% 
+ggplot(aes(x = prize_year, y = mean_age )) +
+geom_point() +
+geom_line() +
+scale_x_continuous(breaks = seq(1800,2019,10)) +
+scale_y_continuous(limits = c(15,99))
+```
+---
+```{r, out.width = '50%'}
+nobel_winners  %>%
+  filter(!is.na(age_awarded))  %>%
+  group_by(prize_year)  %>%
+  summarise( mean_age = mean(age_awarded))  %>% 
+ggplot(aes(x = prize_year, y = mean_age )) +
+geom_point() +
+geom_line() +
+geom_smooth() +
+scale_x_continuous(breaks = seq(1800,2019,10)) +
+scale_y_continuous(limits = c(15,99))
+```
+---
+```{r, out.width = '50%'}
+nobel_winners  %>%
+  filter(!is.na(age_awarded))  %>%
+  group_by(prize_year, category)  %>%
+  summarise( mean_age = mean(age_awarded))  %>% 
+ggplot(aes(x = prize_year, y = mean_age )) +
+geom_point() +
+geom_line() +
+geom_smooth(method = "lm", se = FALSE) +
+scale_x_continuous(breaks = seq(1800,2019,10)) +
+scale_y_continuous(limits = c(15,99)) +
+facet_grid(category ~ .)
+```
+---
+# Jittered geom_point: geom_jitter()
+* Summarizes the date into five values
+```{r, out.width = '50%'}
+ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
+  geom_jitter()
+```
+---
+
