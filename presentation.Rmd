@@ -1,51 +1,68 @@
 ---
 title: "Data Visualization in R with ggplot2"
 author: "Ali Seyhun Saral"
+institute: "Jdmx 2019"
 date: "2019-06-29" 
 output:
   xaringan::moon_reader:
+    css: [default, shinobi, tamu-fonts]
     lib_dir: libs
     nature:
       highlightStyle: github
       countIncrementalSlides: false
 ---
-
+<link href="https://fonts.googleapis.com/css?family=Anton|Average|Fjalla+One|Gravitas+One|Montserrat&display=swap" rel="stylesheet"> 
 ```{r setup, include=FALSE}
 library(ggplot2)
-library(ggrepel)
 library(dplyr)
+library(ggrepel)
 library(ggthemes)
-presentation_theme  <- theme_gray() + 
-theme(axis.text = element_text(size = 18),
-      axis.title = element_text(size = 18))
+library(ggsci)
+#presentation_theme  <- theme_gray() + 
+#theme(axis.text = element_text(size = 18),
+#      axis.title = element_text(size = 18))
      
-theme_set(presentation_theme)
+#theme_set(presentation_theme)
+knitr::opts_chunk$set(dpi=300)
+options(timeout= 4000000) 
 
 ```
 # Data Visualization in R
-## 
+
 
 * This is something
   + This is something else
 
 ---
 
-# `ggplot2`: The Grammar of Graphics
-* Wilkinson(2005): What is a statistical graph?
 
+# `ggplot2`: What is gg?
 
-  * _A statistical graphic is a __mapping__ from data to __aesthetic__ attributes (color, shape, size) of __geometric objects__ (points, lines, bars)_. [Wickham(2005)]
-  
-  
-  * Set of independent components:
-    * Data 
-    * Layers
-      * Geometric objects (geoms)
-      * Statistical Transformations (stats)
-    * Scales (scale)
-    * Coordinate system (coord)
-    * Facet (facet)
-    * Theme (theme)
+Wilkinson(2005): The Grammar of Graphics   
+
+--
+
+ _A statistical graphic is a __mapping__ from data to __aesthetic__ attributes (color, shape, size) of __geometric objects__ (points, lines, bars)_. 
+ 
+--
+
+- Set of independent components:
+
+    - Data
+ 
+    - Layers
+
+        - Geometric objects (geoms)
+
+        - Statistical Transformations (stats)
+
+    - Scales (scale)
+
+    - Coordinate system (coord)
+
+    - Facets (facet)
+
+    - Theme (theme)
 
 ---
 ## Mappings
@@ -80,8 +97,8 @@ ggplot(my_data, aes(x = study_hours, y = score, color = class)) +
 
 
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9}
-nobel_winners <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-14/nobel_winners.csv")
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9, out.width = '100%'}
+nobel_winners <- readr::read_csv("./nobel_winners.csv")
 
 
 # Extracting the year from birthdate
@@ -139,11 +156,238 @@ happiness_data  <- readRDS("./happiness_data.rds")
 ---
 # Our first `ggplot2` graph
 The relationship between `happiness` and `gdp_per_capita`.
-```{r, fig.height=6, fig.width=8, echo = FALSE}
+```{r,  fig.height = 3.5, fig.width = 4.5, echo = FALSE, message = FALSE, warning = FALSE, out.width = '80%', fig.align = "center"}
+
 ggplot(happiness_data, aes(gdp_per_capita, happiness)) +
-geom_point(color = "dodgerblue") +
+geom_point(aes(color = continent), alpha = 0.6) +
+geom_line(stat = "smooth", method = "lm", se = FALSE, color = "black") +
 labs(x = "GDP per capita",
-     y = "Happiness Score") 
+     y = "Happiness Score",
+     color = "") +
+  scale_y_continuous(limits = c(0,8), breaks = 0:8) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  theme(legend.text = element_text(
+    margin = margin(r = 8, l = 0, unit = "pt"))) +
+  scale_color_brewer(palette = "Set1")
+
+
+
+
+ 
      
 ```
+---
+# Initializing the canvas
+* Load `ggplot2` library 
+* We use `ggplot()` function (not ggplot2)
+* Define the data frame
+* Define the aesthetic mappings with `aes()`
 
+```{r , out.width = '40%', fig.align = 'center'}
+ggplot(happiness_data, aes( x = gdp_per_capita, y = happiness))
+```
+---
+# Adding `geom_point`
+* Elements are added with `+` (must be at the end of the line)
+* Create scatterplots and bubble charts
+* Can take `x`, `y`, `color`, `size`, `alpha` ...
+* Documentation for `geom_point`:   
+  https://ggplot2.tidyverse.org/reference/geom_point.html
+```{r , out.width = '30%', fig.align = 'center'}
+ggplot(happiness_data, aes( x = gdp_per_capita, y = happiness)) +
+  geom_point()
+```
+
+* geoms inherit aesthetic mappings from the top level of the plot, which is the `ggplot()` function
+---
+# Coloring vs. Mapping to a Color
+* If we want to color a geom, we should add the parameter directly
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes( x = gdp_per_capita, y = happiness)) +
+  geom_point(color = "red")
+```
+---
+#  Coloring vs. Mapping to a Color
+* If we want to map a variable to the color, we use `aes()`
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness,
+                           color = continent)) +
+  geom_point()
+```
+---
+# Coloring vs. Mapping to a Color
+* Note that we could put the color aesthetic in `geom_point()` as well.
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+    geom_point(aes(color = continent))
+```
+---
+# Mapping to a Shape Instead
+
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+    geom_point(aes(shape = continent))
+```
+---
+# Or both
+
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+    geom_point(aes(shape = continent, color = continent))
+```
+---
+
+# We can even add a size mapping
+
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+    geom_point(aes( color = continent, size = generosity))
+```
+---
+# Let's stick to the previous one
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+    geom_point(aes( color = continent))
+```
+---
+# Setting the axis limits
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+    geom_point(aes( color = continent)) +
+    scale_y_continuous( limits = c(0,8)) 
+```
+---
+# Setting the axis breaks
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+    geom_point(aes( color = continent)) +
+    scale_y_continuous( limits = c(0,8), breaks = 1:8) 
+```
+`seq()` function can be handy to set axis breaks.
+---
+# Setting axis names
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+    geom_point(aes( color = continent)) +
+    scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+      scale_x_continuous(name = "Log GDP per Capita")
+```
+`seq()` function can be handy to set axis breaks.
+---
+
+# Scales
+
+* Control how data map to visual properties
+* `ggplot2` has well selected defaults, but often customization is needed
+* There are several "ready to use" scales for different type of aesthethics
+
+[`scale_x_discrete()`](https://ggplot2.tidyverse.org/reference/scale_discrete.html)  
+[`scale_x_continuous()`](https://ggplot2.tidyverse.org/reference/scale_continuous.html)  
+[`scale_shape()`](https://ggplot2.tidyverse.org/reference/scale_shape.html)  
+[`scale_color_brewer()`](https://ggplot2.tidyverse.org/reference/scale_brewer.html)  More information [Brewer Scale Palettes](http://colorbrewer2.org/#type=qualitative&scheme=Set1&n=3)  
+
+* And can be built manually:
+
+[DIY scales](https://ggplot2.tidyverse.org/reference/scale_manual.html)
+```
+scale_colour_manual() 
+scale_fill_manual() 
+scale_size_manual() 
+scale_shape_manual() 
+scale_linetype_manual() 
+scale_alpha_manual()
+scale_discrete_manual() 
+```
+
+---
+# Setting color scale : Brewer palette
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+  geom_point(aes( color = continent)) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+    scale_x_continuous(name = "Log GDP per Capita") +
+    scale_color_brewer(name = "Continent", palette = "Set1")
+```
+---
+# Setting color scale : Custom
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+  geom_point(aes( color = continent)) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+    scale_x_continuous(name = "Log GDP per Capita") +
+    scale_color_manual(name = "Continent",
+                       values = c("blue", "orange", "red", "purple", "cyan"))
+```
+---
+# Setting color scale : Custom
+```{r , out.width = '45%', fig.align = 'center'}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+  geom_point(aes( color = continent)) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+    scale_x_continuous(name = "Log GDP per Capita") +
+    scale_color_manual(name = "Continent",
+                       values = c("blue", "orange", "red", "purple", "cyan"),
+                       labels = c("AFR","AMR","ASI","EUR","OCE"))
+```
+---
+
+
+
+# Adding `geom_smooth()`
+```{r , out.width = '60%', fig.align = 'center', fig.height = 5}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+  geom_point(aes( color = continent)) +
+  geom_smooth() +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_x_continuous(name = "Log GDP per Capita") +
+  scale_color_brewer(palette = "Set1")
+```
+---
+# Adding linear `geom_smooth()`
+```{r , out.width = '60%', fig.align = 'center', fig.height = 5}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+  geom_point(aes( color = continent)) +
+  geom_smooth(method = "lm") +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_x_continuous(name = "Log GDP per Capita") +
+  scale_color_brewer(palette = "Set1")
+```
+---
+# Final Touches
+```{r , out.width = '60%', fig.align = 'center', fig.height = 5}
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+  geom_point(aes(color = continent), alpha = 0.5, size = 3) +
+  geom_smooth(method = "lm", se= FALSE, color = "black") +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_x_continuous(name = "Log GDP per Capita") +
+  scale_color_brewer(palette = "Set1") +
+  theme_bw()
+```
+---
+# Facetting
+```{r , out.width = '90%', fig.align = 'center', fig.height = 4, fig.width = 9 }
+ggplot(happiness_data, aes(x = gdp_per_capita,
+                           y = happiness)) +
+  geom_point(aes( color = continent), alpha = 0.5) +
+  geom_smooth(happiness_data, aes(group = continent), method = "lm", se = FALSE, color = "black") +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
+  scale_x_continuous(name = "Log GDP per Capita") +
+  scale_color_brewer(palette = "Set1") +
+  facet_grid( ~ continent)
+```
