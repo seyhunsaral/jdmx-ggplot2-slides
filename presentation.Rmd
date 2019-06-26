@@ -372,7 +372,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ```{r , out.width = '60%', fig.align = 'center', fig.height = 5}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
-  geom_point(aes(color = continent), alpha = 0.5, size = 3) +
+  geom_point(aes(color = continent), alpha = 0.5) +
   geom_smooth(method = "lm", se= FALSE, color = "black") +
   scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
   scale_x_continuous(name = "Log GDP per Capita") +
@@ -382,12 +382,15 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ---
 # Facetting
 ```{r , out.width = '90%', fig.align = 'center', fig.height = 4, fig.width = 9 }
+
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
-  geom_point(aes( color = continent), alpha = 0.5) +
-  geom_smooth(happiness_data, aes(group = continent), method = "lm", se = FALSE, color = "black") +
+  geom_point(aes(color = continent), alpha = 0.5) +
+  geom_smooth(method = "lm", se= FALSE, color = "black") +
   scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 1:8) +
   scale_x_continuous(name = "Log GDP per Capita") +
   scale_color_brewer(palette = "Set1") +
-  facet_grid( ~ continent)
+  facet_grid( ~ continent) +
+  theme_bw()
+
 ```
