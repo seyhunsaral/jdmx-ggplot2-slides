@@ -25,37 +25,24 @@ class: center, middle, inverse, title-slide
 
 
 ### `ggplot2`: What does gg stand for?
-
-Wilkinson(2005): The Grammar of Graphics   
+* Initiated by Hadley Wickham
+* Based on Wilkinson(2005): The Grammar of Graphics   
 
 --
 
  _A statistical graphic is a __mapping__ from data to __aesthetic__ attributes (color, shape, size) of __geometric objects__ (points, lines, bars)_. 
- 
+ Wickham - ggplot2 (2016)
 --
 
 - Set of independent components:
-
     - Data
- 
     - Layers
-
         - Geometric objects (geoms)
-
         - Statistical Transformations (stats)
-
     - Scales (scale)
-
     - Coordinate system (coord)
-
     - Facets (facet)
-
     - Theme (theme)
-
----
-## Let's get started
-Go to:
-### [saral.it/jdmx](https://saral.it/jdmx)
 
 ---
 ### Mappings
@@ -70,19 +57,29 @@ head(my_data)
 ```
 
 ```
-##   class study_hours score
-## 1     A          28    63
-## 2     A          21    59
-## 3     A          14    40
-## 4     A          29    78
-## 5     A          16    37
-## 6     A          28    60
+##   class hours_studied score
+## 1     A            28    63
+## 2     A            21    59
+## 3     A            14    40
+## 4     A            29    78
+## 5     A            16    37
+## 6     A            28    60
 ```
 ]
 .pull-right[
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
 ]
+---
+## Let's get started
+* Go to:
+### [saral.it/jdmx](https://saral.it/jdmx)
+
+
+* If you are running on your own computer, please install necessary packages ( `pack.R` )
+
+* Open `ex1.R`
+
 ---
 ### Data
 
@@ -206,7 +203,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ```r
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
-    geom_point(aes(shape = continent, color = continent))
+  geom_point(aes(shape = continent, color = continent))
 ```
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-15-1.png" width="50%" style="display: block; margin: auto;" /&gt;
@@ -217,7 +214,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ```r
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
-    geom_point(aes( color = continent, size = generosity))
+  geom_point(aes( color = continent, size = generosity))
 ```
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-16-1.png" width="50%" style="display: block; margin: auto;" /&gt;
@@ -237,8 +234,8 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ```r
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
-    geom_point(aes( color = continent)) +
-    scale_y_continuous( limits = c(0,8)) 
+  geom_point(aes( color = continent)) +
+  scale_y_continuous( limits = c(0,8)) 
 ```
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-18-1.png" width="50%" style="display: block; margin: auto;" /&gt;
@@ -260,9 +257,9 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ```r
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
-    geom_point(aes( color = continent)) +
-    scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
-      scale_x_continuous(name = "Log GDP per Capita")
+  geom_point(aes( color = continent)) +
+  scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
+  scale_x_continuous(name = "Log GDP per Capita")
 ```
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-20-1.png" width="50%" style="display: block; margin: auto;" /&gt;
@@ -301,8 +298,8 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes( color = continent)) +
   scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
-    scale_x_continuous(name = "Log GDP per Capita") +
-    scale_color_brewer(name = "Continent", palette = "Set1")
+  scale_x_continuous(name = "Log GDP per Capita") +
+  scale_color_brewer(name = "Continent", palette = "Set1")
 ```
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-21-1.png" width="50%" style="display: block; margin: auto;" /&gt;
@@ -314,9 +311,9 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes( color = continent)) +
   scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
-    scale_x_continuous(name = "Log GDP per Capita") +
-    scale_color_manual(name = "Continent",
-                       values = c("blue", "orange", "red", "purple", "cyan"))
+  scale_x_continuous(name = "Log GDP per Capita") +
+  scale_color_manual(name = "Continent",
+                     values = c("blue", "orange", "red", "purple", "cyan"))
 ```
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-22-1.png" width="50%" style="display: block; margin: auto;" /&gt;
@@ -328,10 +325,10 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
   geom_point(aes( color = continent)) +
   scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
-    scale_x_continuous(name = "Log GDP per Capita") +
-    scale_color_manual(name = "Continent",
-                       values = c("blue", "orange", "red", "purple", "cyan"),
-                       labels = c("AFR","AMR","ASI","EUR","OCE"))
+  scale_x_continuous(name = "Log GDP per Capita") +
+  scale_color_manual(name = "Continent",
+                     values = c("blue", "orange", "red", "purple", "cyan"),
+                     labels = c("AFR","AMR","ASI","EUR","OCE"))
 ```
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-23-1.png" width="45%" style="display: block; margin: auto;" /&gt;
@@ -406,15 +403,38 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 --
 
 &lt;img src="./img/googling2.png" width="80%" style="display: block; margin: auto;" /&gt;
+---
+### Don't get lost
+#### Commands and Packages
+`help(command_name)`  
+`help(package = 'dplyr')`  
+`browseVignettes(package=package-name)`   
+
+#### Browsing data
+`view(data_name)` : Real slow. Only in RStudio  
+    `head(data_name` and `tail(data_name)`: First n lines / Last n lines  
+`str(data_name)`: Check the structure  
+`glimpse(data_name)`: Better structure (IMHO)  
+`summary(data_name)`: Summary of the data  
+
+#### My problem solving workflow  
+
+* Help functions
+* Googling it [Don't let anyone google that for you](https://lmgtfy.com/?iie=1&amp;q=rotate+axis+labels+in+ggplot2)
+* [Tidyverse.org](https://www.tidyverse.org/)
+* [Stackoverflow.com](https://www.stackoverflow.com)
 
 ---
 ### Bar charts in ggplot
-* `geom_col()`: General mapping
+* `geom_col()`: 
+    * Direct mapping from the data 
     * x: categorical variable
     * y: bar height
     
-* `geom_bar()`: Used for counting instances in data
+* `geom_bar()`: 
+    * Special case of `geom_col()`
     * x: categorical variable
+    * y: no y variable (with exceptions)
 ---
 ### Bar charts in ggplot : geom_col()
 
@@ -456,9 +476,9 @@ ggplot(happiness_data_subset, aes(x = country, y = happiness)) +
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-34-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
-### Nobel Prize Data
-* ex2.R
-
+### Nobel Prize Data (Step 1)
+* Open ex2.R
+* Individual/Organizational level
 
 
 
@@ -469,31 +489,31 @@ glimpse(nobel_winners)
 ```
 ## Observations: 969
 ## Variables: 20
-## $ prize_year           &lt;dbl&gt; 1901, 1901, 1901, 1901, 1901, 1901, 1902, 1…
-## $ category             &lt;chr&gt; "Chemistry", "Literature", "Medicine", "Pea…
-## $ prize                &lt;chr&gt; "The Nobel Prize in Chemistry 1901", "The N…
-## $ motivation           &lt;chr&gt; "\"in recognition of the extraordinary serv…
-## $ prize_share          &lt;chr&gt; "1/1", "1/1", "1/1", "1/2", "1/2", "1/1", "…
-## $ laureate_id          &lt;dbl&gt; 160, 569, 293, 462, 463, 1, 161, 571, 294, …
-## $ laureate_type        &lt;chr&gt; "Individual", "Individual", "Individual", "…
-## $ full_name            &lt;chr&gt; "Jacobus Henricus van 't Hoff", "Sully Prud…
-## $ birth_date           &lt;date&gt; 1852-08-30, 1839-03-16, 1854-03-15, 1828-0…
-## $ birth_city           &lt;chr&gt; "Rotterdam", "Paris", "Hansdorf (Lawice)", …
-## $ birth_country        &lt;chr&gt; "Netherlands", "France", "Prussia (Poland)"…
-## $ gender               &lt;chr&gt; "Male", "Male", "Male", "Male", "Male", "Ma…
-## $ organization_name    &lt;chr&gt; "Berlin University", NA, "Marburg Universit…
-## $ organization_city    &lt;chr&gt; "Berlin", NA, "Marburg", NA, NA, "Munich", …
-## $ organization_country &lt;chr&gt; "Germany", NA, "Germany", NA, NA, "Germany"…
-## $ death_date           &lt;date&gt; 1911-03-01, 1907-09-07, 1917-03-31, 1910-1…
-## $ death_city           &lt;chr&gt; "Berlin", "Châtenay", "Marburg", "Heiden", …
-## $ death_country        &lt;chr&gt; "Germany", "France", "Germany", "Switzerlan…
-## $ birth_year           &lt;chr&gt; "1852", "1839", "1854", "1828", "1822", "18…
-## $ age_awarded          &lt;dbl&gt; 49, 62, 47, 73, 79, 56, 50, 85, 45, 69, 59,…
+## $ prize_year           [3m[90m&lt;dbl&gt;[39m[23m 1901, 1901, 1901, 1901, 1901, 1901, 1902, 1…
+## $ category             [3m[90m&lt;chr&gt;[39m[23m "Chemistry", "Literature", "Medicine", "Pea…
+## $ prize                [3m[90m&lt;chr&gt;[39m[23m "The Nobel Prize in Chemistry 1901", "The N…
+## $ motivation           [3m[90m&lt;chr&gt;[39m[23m "\"in recognition of the extraordinary serv…
+## $ prize_share          [3m[90m&lt;chr&gt;[39m[23m "1/1", "1/1", "1/1", "1/2", "1/2", "1/1", "…
+## $ laureate_id          [3m[90m&lt;dbl&gt;[39m[23m 160, 569, 293, 462, 463, 1, 161, 571, 294, …
+## $ laureate_type        [3m[90m&lt;chr&gt;[39m[23m "Individual", "Individual", "Individual", "…
+## $ full_name            [3m[90m&lt;chr&gt;[39m[23m "Jacobus Henricus van 't Hoff", "Sully Prud…
+## $ birth_date           [3m[90m&lt;date&gt;[39m[23m 1852-08-30, 1839-03-16, 1854-03-15, 1828-0…
+## $ birth_city           [3m[90m&lt;chr&gt;[39m[23m "Rotterdam", "Paris", "Hansdorf (Lawice)", …
+## $ birth_country        [3m[90m&lt;chr&gt;[39m[23m "Netherlands", "France", "Prussia (Poland)"…
+## $ gender               [3m[90m&lt;chr&gt;[39m[23m "Male", "Male", "Male", "Male", "Male", "Ma…
+## $ organization_name    [3m[90m&lt;chr&gt;[39m[23m "Berlin University", NA, "Marburg Universit…
+## $ organization_city    [3m[90m&lt;chr&gt;[39m[23m "Berlin", NA, "Marburg", NA, NA, "Munich", …
+## $ organization_country [3m[90m&lt;chr&gt;[39m[23m "Germany", NA, "Germany", NA, NA, "Germany"…
+## $ death_date           [3m[90m&lt;date&gt;[39m[23m 1911-03-01, 1907-09-07, 1917-03-31, 1910-1…
+## $ death_city           [3m[90m&lt;chr&gt;[39m[23m "Berlin", "Châtenay", "Marburg", "Heiden", …
+## $ death_country        [3m[90m&lt;chr&gt;[39m[23m "Germany", "France", "Germany", "Switzerlan…
+## $ birth_year           [3m[90m&lt;dbl&gt;[39m[23m 1852, 1839, 1854, 1828, 1822, 1845, 1852, 1…
+## $ age_awarded          [3m[90m&lt;dbl&gt;[39m[23m 49, 62, 47, 73, 79, 56, 50, 85, 45, 69, 59,…
 ```
 ---
-### Bar Charts: geom_bar()
-* Let's create our first plot
+### Bar Charts: `geom_bar()` (Step 2)
 * Note that geom_bar automatically counts the number of instances (default behavior)
+* Special case of geom_col()
 
 
 ```r
@@ -502,12 +522,12 @@ ggplot(nobel_winners, aes(x = category))+
 ```
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-37-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
 ---
-### Bar Charts: geom_bar()
-* Two types of bar charts in ggplot: `geom_bar()` and `geom_col`.
-* `geom_col()` is a simple 
-* Let's create our first plot
-* Note that geom_bar automatically counts the number of instances (default behavior)
+
+### Bar Charts: `fill` aesthethics (Step 3)
+* Note that we use `fill` instead of `color`
+* Color often refers to outline
 
 
 ```r
@@ -517,6 +537,8 @@ ggplot(nobel_winners, aes(x = category, fill = gender))+
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-38-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
+
+
 ### Investigating the data
 What are the NA's?
 
@@ -550,21 +572,21 @@ unique(nobel_winners$laureate_type)
 ```
 ## [1] "Individual"   "Organization"
 ```
+
 ---
-### Let's take individual laureates only 
+
+### Let's take individual laureates only  (Step 4 and Step 5)
 
 ```r
-nobel_winners_ind  &lt;- nobel_winners  %&gt;% filter(laureate_type == "Individual")
-```
----
-### Let's take individual laureates only 
+nobel_winners_ind  &lt;- nobel_winners  %&gt;%
+  filter(laureate_type == "Individual")
 
-```r
-ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
+ggplot(nobel_winners, aes(x = category, fill = gender))+
   geom_bar()
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-42-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-41-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
 ---
 ### Different possibilities
 
@@ -573,8 +595,9 @@ ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
   geom_bar(position = "dodge")
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-43-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-42-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
+
 ### Different possibilities
 
 ```r
@@ -582,9 +605,19 @@ ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
   geom_bar(position = "fill")
 ```
 
+&lt;img src="presentation_files/figure-html/unnamed-chunk-43-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+---
+### A continous and a categorical variable: `geom_boxplot()`
+* Summarized by  five parameters
+
+```r
+ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
+  geom_boxplot()
+```
+
 &lt;img src="presentation_files/figure-html/unnamed-chunk-44-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
-### A continous and a categorical variable: geom_boxplot()
+### A continuous and a categorical variable: `geom_point()`?
 
 ```r
 ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
@@ -593,16 +626,36 @@ ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-45-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
-### Layering up: geom_jitter() and geom_boxplot()
+### A continuous and a categorical variable: `geom_jitter()`
 
 ```r
 ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
-  geom_jitter() +
-  geom_boxplot(fill = NA, color = "blue", outlier.shape = NA)
+  geom_jitter()
 ```
 
 &lt;img src="presentation_files/figure-html/unnamed-chunk-46-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
+### A continous and a categorical variable: `geom_jitter()`
+* We have to be careful about misrepresentation
+
+```r
+ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
+  geom_jitter(height = 0, width = 0.3)
+```
+
+&lt;img src="presentation_files/figure-html/unnamed-chunk-47-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+---
+### Layering up: geom_jitter() and geom_boxplot()
+
+```r
+ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
+  geom_jitter(color = "blue") +
+  geom_boxplot(fill = NA, color = "black", outlier.shape = NA)
+```
+
+&lt;img src="presentation_files/figure-html/unnamed-chunk-48-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+---
+
 
 ```r
 ggplot(nobel_winners, aes(x = age_awarded)) +
@@ -610,7 +663,7 @@ ggplot(nobel_winners, aes(x = age_awarded)) +
   facet_grid(category ~ .)
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-47-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-49-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
 
 
@@ -620,7 +673,7 @@ ggplot(nobel_winners, aes(x = age_awarded)) +
   facet_grid(category ~ .)
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-48-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-50-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
 
 
@@ -630,14 +683,14 @@ nobel_winners  %&gt;%
   filter(!is.na(age_awarded))  %&gt;%
   group_by(prize_year)  %&gt;%
   summarise( mean_age = mean(age_awarded))  %&gt;% 
-ggplot(aes(x = prize_year, y = mean_age )) +
-geom_point() +
-geom_line() +
-scale_x_continuous(breaks = seq(1800,2019,10)) +
-scale_y_continuous(limits = c(15,99))
+  ggplot(aes(x = prize_year, y = mean_age )) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous(breaks = seq(1800,2019,10)) +
+  scale_y_continuous(limits = c(15,99))
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-49-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-51-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
 
 ```r
@@ -653,7 +706,7 @@ scale_x_continuous(breaks = seq(1800,2019,10)) +
 scale_y_continuous(limits = c(15,99))
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-50-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-52-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
 
 
@@ -671,22 +724,67 @@ scale_y_continuous(limits = c(15,99)) +
 facet_grid(category ~ .)
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-51-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-53-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ---
-### Jittered geom_point: geom_jitter()
-* Summarizes the date into five values
+&lt;img src="presentation_files/figure-html/unnamed-chunk-54-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+---
+### Step 1 - Creating jittered plot
+&lt;img src="presentation_files/figure-html/unnamed-chunk-55-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+### Step 2 - Creating summary statistics 
+* Average of all disciplines
+* Average for each discipline
+* Minimum, Maximum, 
+---
+
+### Step 2 - Creating summary statistics 
+* Average of all disciplines
 
 ```r
-ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
-  geom_jitter()
+average_age  &lt;- mean(nobel_winners$age_awarded, na.rm = TRUE)
+print(average_age)
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-52-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+```
+## [1] 59.48401
+```
+* Average for each discipline
+
+```r
+nobel_winners_summary  &lt;- nobel_winners %&gt;%
+  group_by(category)  %&gt;%
+  summarise( mean_age_awarded = mean(age_awarded, na.rm = TRUE))  %&gt;%
+  arrange(mean_age_awarded) 
+
+print(nobel_winners_summary)
+```
+
+```
+## # A tibble: 6 x 2
+##   category   mean_age_awarded
+##   &lt;fct&gt;                 &lt;dbl&gt;
+## 1 Physics                55.8
+## 2 Medicine               57.9
+## 3 Chemistry              58.1
+## 4 Peace                  61.4
+## 5 Literature             64.7
+## 6 Economics              67.2
+```
 ---
-# Here we go
+### Step 3 - Layering up the summary
+
+```r
+ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
+    geom_jitter(alpha = 0.3, width = 0.0, height = 0.1, size = 2) +
+    geom_point(data = nobel_winners_summary,
+               aes(x =mean_age_awarded), size = 10)
+```
+
+&lt;img src="presentation_files/figure-html/unnamed-chunk-58-1.png" style="display: block; margin: auto;" /&gt;
+
 ---
-&lt;img src="presentation_files/figure-html/unnamed-chunk-53-1.png" width="100%" style="display: block; margin: auto;" /&gt;
----
+# World Map
 
 ```r
 library(rworldmap)
@@ -705,7 +803,7 @@ ggplot() +
   coord_equal()
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-54-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-59-1.png" style="display: block; margin: auto;" /&gt;
 ---
 
 ```r
@@ -726,7 +824,18 @@ ggplot() +
   coord_equal()
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-55-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-60-1.png" style="display: block; margin: auto;" /&gt;
+---
+### Final Remarks
+
+- `ggplot2` is straightforward as long as you have the right data structure.
+
+--
+
+.center[
+![Saw](./img/meme1.jpg)
+
+]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
