@@ -30,16 +30,7 @@ knitr::opts_chunk$set(dpi=300, warning = FALSE, fig.align = 'center', message = 
 options(timeout= 4000000) 
 
 ```
-# Data Visualization in R
-
-
-* This is something
-  + This is something else
-
----
-
-
-# `ggplot2`: What is gg?
+### `ggplot2`: What does gg stand for?
 
 Wilkinson(2005): The Grammar of Graphics   
 
@@ -68,10 +59,16 @@ Wilkinson(2005): The Grammar of Graphics
     - Theme (theme)
 
 ---
-## Mappings
+## Let's get started
+Go to:
+### [saral.it/jdmx](https://saral.it/jdmx)
 
-```{r, echo=FALSE, fig.cap="A caption", out.width = '100%'}
+---
+### Mappings
+
+```{r, echo=FALSE, out.width = '100%'}
 knitr::include_graphics("./img/flow.png")
+
 ```
 ```{r, echo = FALSE, fig.width = 9, fig.height = 6}
 set.seed(2019)
@@ -80,6 +77,7 @@ my_data  <- data.frame( class = c(rep("A",10),rep("B",10)),
 
 my_data$score  <- round(my_data$study_hours * rnorm(20, mean = 2, sd = 0.3)) + round(if_else(my_data$class == "A", rnorm(20, mean = 8, sd = 2), 0))
 ```
+* aes() is responsible for defining mappings
 .pull-left[
 ```{r}
 head(my_data)
@@ -97,67 +95,17 @@ ggplot(my_data, aes(x = study_hours, y = score, color = class)) +
 ```
 ]
 ---
-
-
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9, out.width = '100%'}
-nobel_winners <- readr::read_csv("./nobel_winners.csv")
-
-
-# Extracting the year from birthdate
-nobel_winners  <- nobel_winners  %>%
-  mutate(birth_year = format(nobel_winners$birth_date, '%Y'))  %>%
-# Calculating the age
-  mutate(age_awarded = prize_year - as.numeric(birth_year))
-
-
-nobel_winners_summary  <- nobel_winners %>%
-  group_by(category)  %>%
-  summarise( mean_age_awarded = mean(age_awarded, na.rm = TRUE), sd_age_awarded = sd(age_awarded, na.rm = TRUE) )  %>%
-  arrange(mean_age_awarded) 
-
-
-#nobel_winners  %>% summarise( mean = mean(age_awarded, na.rm = TRUE), min = min(age_awarded, na.rm = TRUE), max = max(age_awarded, na.rm = TRUE))  
-
-
-nobel_winners  <- nobel_winners  %>% mutate( category = factor(category, levels = nobel_winners_summary$category))
-nobel_winners_summary  <- nobel_winners_summary  %>% mutate( category = factor(category, levels = nobel_winners_summary$category))
-
-ggplot(nobel_winners, aes(x = category, y = age_awarded, color = category))+
-      geom_hline( yintercept = mean(nobel_winners$age_awarded, na.rm = TRUE), color = "gray20", linetype = "dashed") +
-geom_jitter(alpha = 0.3, width = 0.1, height = 0, size = 2) +
-  geom_point(data = nobel_winners_summary, aes(y = mean_age_awarded, fill = category), color = "black", size = 10, pch=21, alpha = 0.9) +
-    geom_text_repel(data = filter(nobel_winners, age_awarded == min(nobel_winners$age_awarded, na.rm = TRUE) | age_awarded == max(nobel_winners$age_awarded, na.rm = TRUE)), aes(label = full_name),
-                  color = "black",
-                  xlim = c(4.5,5.5),
-                  arrow = arrow(length = unit(0.03, "npc"))) +
-#  geom_line(ylim = 40) +
-    labs(title = "Nobel Prize winners by age and discipline",
-         subtitle = "The age of prize winners at the time they won the prize",
-         y = "Age awarded", x = "") +
-  theme_economist() +
-  theme(panel.grid.major.y = element_blank(),
-        panel.grid.major.x = element_line ( size = .5)) +  
-  guides(fill = FALSE, color = FALSE) +
-  scale_y_continuous( limits = c(15,90), breaks = seq(10,90,10)) +
-  annotate("text", x = 7.2, y = 28, label = "Average of all disciplines") +
-  geom_curve(x = 7, y = 30, xend = 6.7, yend = 58, curvature = 0.2, size = 0.3, color = "black", arrow = arrow(length = unit(0.03, "npc"))) +
-  annotate("text", x = 7.5, y = 28, label="") + # this is a trick
-  coord_flip() 
-  ```
----
-
+### Data
 ```{r, echo = FALSE}
 happiness_data  <- readRDS("./happiness_data.rds")
 ```
-# Data 
 * World Happiness Report by UN Sustainable Development Solutions Network
 
 ```{r}
  head(happiness_data)
 ```
 ---
-# Our first `ggplot2` graph
+### Our first `ggplot2` graph
 The relationship between `happiness` and `gdp_per_capita`.
 ```{r,  fig.height = 3.5, fig.width = 4.5, echo = FALSE, message = FALSE, warning = FALSE, out.width = '80%', fig.align = "center"}
 
@@ -181,7 +129,7 @@ labs(x = "GDP per capita",
      
 ```
 ---
-# Initializing the canvas
+### Initializing the canvas (Step 1)
 * Load `ggplot2` library 
 * We use `ggplot()` function (not ggplot2)
 * Define the data frame
@@ -191,7 +139,7 @@ labs(x = "GDP per capita",
 ggplot(happiness_data, aes( x = gdp_per_capita, y = happiness))
 ```
 ---
-# Adding `geom_point`
+### Adding `geom_point` (Step 2)
 * Elements are added with `+` (must be at the end of the line)
 * Create scatterplots and bubble charts
 * Can take `x`, `y`, `color`, `size`, `alpha` ...
@@ -201,10 +149,20 @@ ggplot(happiness_data, aes( x = gdp_per_capita, y = happiness))
 ggplot(happiness_data, aes( x = gdp_per_capita, y = happiness)) +
   geom_point()
 ```
-
 * geoms inherit aesthetic mappings from the top level of the plot, which is the `ggplot()` function
 ---
-# Coloring vs. Mapping to a Color
+### Adding `geom_text` 
+* Elements are added with `+` (must be at the end of the line)
+* Create scatterplots and bubble charts
+* Can take `x`, `y`, `color`, `size`, `alpha` ...
+* Documentation for `geom_point`:   
+  https://ggplot2.tidyverse.org/reference/geom_text.html
+```{r , out.width = '50%', fig.align = 'center'}
+ggplot(happiness_data, aes( x = gdp_per_capita, y = happiness)) +
+  geom_text(aes(label = country))
+```
+---
+### Coloring vs. Mapping to a Color
 * If we want to color a geom, we should add the parameter directly
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes( x = gdp_per_capita, y = happiness)) +
@@ -220,7 +178,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
   geom_point()
 ```
 ---
-# Coloring vs. Mapping to a Color
+### Coloring vs. Mapping to a Color (Step 3)
 * Note that we could put the color aesthetic in `geom_point()` as well.
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
@@ -228,7 +186,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
     geom_point(aes(color = continent))
 ```
 ---
-# Mapping to a Shape Instead
+### Mapping to a Shape Instead
 
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
@@ -236,7 +194,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
     geom_point(aes(shape = continent))
 ```
 ---
-# Or both
+### Or both
 
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
@@ -244,8 +202,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
     geom_point(aes(shape = continent, color = continent))
 ```
 ---
-
-# We can even add a size mapping
+### We can even add a size mapping
 
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
@@ -253,14 +210,14 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
     geom_point(aes( color = continent, size = generosity))
 ```
 ---
-# Let's stick to the previous one
+### Let's stick to the previous one
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
     geom_point(aes( color = continent))
 ```
 ---
-# Setting the axis limits
+### Setting the axis limits (Step 4 ->)
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
@@ -268,7 +225,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
     scale_y_continuous( limits = c(0,8)) 
 ```
 ---
-# Setting the axis breaks
+### Setting the axis breaks (-> Step 4 ->)
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
@@ -277,7 +234,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 ```
 `seq()` function can be handy to set axis breaks.
 ---
-# Setting axis names
+### Setting axis names (-> Step 4)
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
@@ -288,7 +245,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 `seq()` function can be handy to set axis breaks.
 ---
 
-# Scales
+### Scales
 
 * Control how data map to visual properties
 * `ggplot2` has well selected defaults, but often customization is needed
@@ -313,7 +270,7 @@ scale_discrete_manual()
 ```
 
 ---
-# Setting color scale : Brewer palette
+### Setting color scale : Brewer palette (Step 5)
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
@@ -323,7 +280,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
     scale_color_brewer(name = "Continent", palette = "Set1")
 ```
 ---
-# Setting color scale : Custom
+### Setting color scale : Custom
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
@@ -334,7 +291,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
                        values = c("blue", "orange", "red", "purple", "cyan"))
 ```
 ---
-# Setting color scale : Custom
+### Setting color scale : Custom
 ```{r , out.width = '45%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
@@ -346,10 +303,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
                        labels = c("AFR","AMR","ASI","EUR","OCE"))
 ```
 ---
-
-
-
-# Adding `geom_smooth()`
+### Adding `geom_smooth()`(Step 6)
 ```{r , out.width = '60%', fig.align = 'center', fig.height = 5}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
@@ -360,7 +314,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
   scale_color_brewer(palette = "Set1")
 ```
 ---
-# Adding linear `geom_smooth()`
+### Adding linear `geom_smooth()` (Step 7)
 ```{r , out.width = '60%', fig.align = 'center', fig.height = 5}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
@@ -371,7 +325,7 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
   scale_color_brewer(palette = "Set1")
 ```
 ---
-# Final Touches
+### Final Touches (Step 7)
 ```{r , out.width = '60%', fig.align = 'center', fig.height = 5}
 ggplot(happiness_data, aes(x = gdp_per_capita,
                            y = happiness)) +
@@ -379,11 +333,11 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
   geom_smooth(method = "lm", se= FALSE, color = "black") +
   scale_y_continuous(name = "Happiness index", limits = c(0,8), breaks = 0:8) +
   scale_x_continuous(name = "Log GDP per Capita") +
-  scale_color_brewer(palette = "Set1") +
+  scale_color_brewer(name = "", palette = "Set1") +
   theme_bw()
 ```
 ---
-# Facetting
+### Facetting (Bonus Step)
 ```{r , out.width = '90%', fig.align = 'center', fig.height = 4, fig.width = 9 }
 
 ggplot(happiness_data, aes(x = gdp_per_capita,
@@ -398,7 +352,28 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 
 ```
 ---
-# Bar charts in ggplot
+### Before we go on:
+```{r echo=FALSE, out.width = '60%'}
+knitr::include_graphics("./img/googling.png")
+```
+---
+
+```{r echo=FALSE, out.width = '80%'}
+knitr::include_graphics("./img/googling3.png")
+```
+---
+```{r echo=FALSE, out.width = '80%'}
+knitr::include_graphics("./img/googling4.png")
+```
+
+--
+
+```{r echo=FALSE, out.width = '80%'}
+knitr::include_graphics("./img/googling2.png")
+```
+
+---
+### Bar charts in ggplot
 * `geom_col()`: General mapping
     * x: categorical variable
     * y: bar height
@@ -406,35 +381,50 @@ ggplot(happiness_data, aes(x = gdp_per_capita,
 * `geom_bar()`: Used for counting instances in data
     * x: categorical variable
 ---
-# Bar charts in ggplot : geom_col()
+### Bar charts in ggplot : geom_col()
 ```{r}
 library(dplyr)
 happiness_data_subset  <- happiness_data  %>% filter( country %in% c("Italy", "Germany", "Turkey") )
 head(happiness_data_subset)
 ```
 ---
-# Bar charts in ggplot : geom_col()
+### Bar charts in ggplot : geom_col()
 ```{r, out.width = '50%'}
 ggplot(happiness_data_subset, aes(x = country, y = happiness)) +
   geom_col()
 ```
 ---
-# Bar charts in ggplot : geom_col()
-```{r, out.width = '50%'}
+### Bar charts in ggplot : geom_col()
+```{r, out.width = '50%', fig.width = 6, fig.height = 3}
 library(dplyr)
 ggplot(happiness_data_subset, aes(x = country, y = happiness)) +
   geom_point(size = 4) +
-  scale_y_continuous(limits = c(0,8))
+  scale_y_continuous(limits = c(0,8)) +
+  coord_flip()
+  
 
 ```
 ---
-# Nobel Prize 
+### Nobel Prize Data
 * ex2.R
+
+```{r, echo = FALSE}
+nobel_winners <- readr::read_csv("./nobel_winners.csv")
+
+# Extracting the year from birthdate
+nobel_winners  <- nobel_winners  %>%
+  mutate(birth_year = format(nobel_winners$birth_date, '%Y'))  %>%
+# Calculating the age
+  mutate(age_awarded = prize_year - as.numeric(birth_year))
+
+```
+
 ```{r}
-head(nobel_winners)
+
+glimpse(nobel_winners)
 ```
 ---
-# Bar Charts: geom_bar()
+### Bar Charts: geom_bar()
 * Let's create our first plot
 * Note that geom_bar automatically counts the number of instances (default behavior)
 
@@ -444,7 +434,7 @@ ggplot(nobel_winners, aes(x = category))+
 
 ```
 ---
-# Bar Charts: geom_bar()
+### Bar Charts: geom_bar()
 * Two types of bar charts in ggplot: `geom_bar()` and `geom_col`.
 * `geom_col()` is a simple 
 * Let's create our first plot
@@ -456,7 +446,7 @@ ggplot(nobel_winners, aes(x = category, fill = gender))+
 
 ```
 ---
-# Investigating the data
+### Investigating the data
 What are the NA's?
 
 ```{r}
@@ -467,36 +457,36 @@ library(dplyr)
 unique(nobel_winners$laureate_type)
 ```
 ---
-# Let's take individual laureates only 
+### Let's take individual laureates only 
 ```{r}
 nobel_winners_ind  <- nobel_winners  %>% filter(laureate_type == "Individual")
 ```
 ---
-# Let's take individual laureates only 
+### Let's take individual laureates only 
 ```{r, out.width = '50%'}
 ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
   geom_bar()
 ```
 ---
-# Different possibilities
+### Different possibilities
 ```{r, out.width = '50%'}
 ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
   geom_bar(position = "dodge")
 ```
 ---
-# # Different possibilities
+### Different possibilities
 ```{r, out.width = '50%'}
 ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
   geom_bar(position = "fill")
 ```
 ---
-# A continous and a categorical variable: geom_boxplot()
+### A continous and a categorical variable: geom_boxplot()
 ```{r, out.width = '50%'}
 ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
   geom_point()
 ```
 ---
-# Layering up: geom_jitter() and geom_boxplot()
+### Layering up: geom_jitter() and geom_boxplot()
 ```{r, out.width = '50%'}
 ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
   geom_jitter() +
@@ -545,6 +535,7 @@ scale_x_continuous(breaks = seq(1800,2019,10)) +
 scale_y_continuous(limits = c(15,99))
 ```
 ---
+
 ```{r, out.width = '50%'}
 nobel_winners  %>%
   filter(!is.na(age_awarded))  %>%
@@ -559,11 +550,94 @@ scale_y_continuous(limits = c(15,99)) +
 facet_grid(category ~ .)
 ```
 ---
-# Jittered geom_point: geom_jitter()
+### Jittered geom_point: geom_jitter()
 * Summarizes the date into five values
 ```{r, out.width = '50%'}
 ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
   geom_jitter()
 ```
 ---
+# Here we go
+---
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9, out.width = '100%'}
 
+
+
+# Extracting the year from birthdate
+nobel_winners  <- nobel_winners  %>%
+  mutate(birth_year = format(nobel_winners$birth_date, '%Y'))  %>%
+# Calculating the age
+  mutate(age_awarded = prize_year - as.numeric(birth_year))
+
+
+nobel_winners_summary  <- nobel_winners %>%
+  group_by(category)  %>%
+  summarise( mean_age_awarded = mean(age_awarded, na.rm = TRUE), sd_age_awarded = sd(age_awarded, na.rm = TRUE) )  %>%
+  arrange(mean_age_awarded) 
+
+
+#nobel_winners  %>% summarise( mean = mean(age_awarded, na.rm = TRUE), min = min(age_awarded, na.rm = TRUE), max = max(age_awarded, na.rm = TRUE))  
+
+
+nobel_winners  <- nobel_winners  %>% mutate( category = factor(category, levels = nobel_winners_summary$category))
+nobel_winners_summary  <- nobel_winners_summary  %>% mutate( category = factor(category, levels = nobel_winners_summary$category))
+
+ggplot(nobel_winners, aes(x = category, y = age_awarded, color = category))+
+      geom_hline( yintercept = mean(nobel_winners$age_awarded, na.rm = TRUE), color = "gray20", linetype = "dashed") +
+geom_jitter(alpha = 0.3, width = 0.1, height = 0, size = 2) +
+  geom_point(data = nobel_winners_summary, aes(y = mean_age_awarded, fill = category), color = "black", size = 10, pch=21, alpha = 0.9) +
+    geom_text_repel(data = filter(nobel_winners, age_awarded == min(nobel_winners$age_awarded, na.rm = TRUE) | age_awarded == max(nobel_winners$age_awarded, na.rm = TRUE)), aes(label = full_name),
+                  color = "black",
+                  xlim = c(4.5,5.5),
+                  arrow = arrow(length = unit(0.03, "npc"))) +
+#  geom_line(ylim = 40) +
+    labs(title = "Nobel Prize winners by age and discipline",
+         subtitle = "The age of prize winners at the time they won the prize",
+         y = "Age awarded", x = "") +
+  theme_economist() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line ( size = .5)) +  
+  guides(fill = FALSE, color = FALSE) +
+  scale_y_continuous( limits = c(15,90), breaks = seq(10,90,10)) +
+  annotate("text", x = 7.2, y = 28, label = "Average of all disciplines") +
+  geom_curve(x = 7, y = 30, xend = 6.7, yend = 58, curvature = 0.2, size = 0.3, color = "black", arrow = arrow(length = unit(0.03, "npc"))) +
+  annotate("text", x = 7.5, y = 28, label="") + # this is a trick
+  coord_flip() 
+  ```
+---
+```{r}
+library(rworldmap)
+library(ggplot2)
+map_world <- map_data(map="world")
+
+#Add the data you want to map countries by to map.world
+#In this example, I add lengths of country names plus some offset
+
+map_world_happiness  <- map_world  %>% rename(country = region)  %>% left_join(happiness_data, by = "country") 
+
+map_world_new  <- map_world  %>% rename(country = region) 
+
+ggplot() +
+  geom_map(data=map_world_happiness, map=map_world, aes(map_id=country, x=long, y=lat, fill=happiness)) +
+  coord_equal()
+
+```
+---
+```{r}
+library(rworldmap)
+library(ggplot2)
+map_world <- map_data(map="world")
+
+#Add the data you want to map countries by to map.world
+#In this example, I add lengths of country names plus some offset
+
+map_world_happiness  <- map_world  %>% rename(country = region)  %>% left_join(happiness_data, by = "country") 
+
+map_world_new  <- map_world  %>% rename(country = region) 
+
+ggplot() +
+  geom_map(data=map_world_happiness, map=map_world, aes(map_id=country, x=long, y=lat, fill=happiness), color = "black", size =0.2) +
+  scale_fill_distiller(direction = 1) +
+  coord_equal()
+
+```
