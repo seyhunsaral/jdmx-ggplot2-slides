@@ -1,0 +1,19 @@
+
+<!---
+# Available Shapes 
+```{r, out.width = '60%', echo = FALSE, fig.align = 'center'}
+d=data.frame(p=c(0:25,32:127))
+ggplot() +
+scale_shape_identity() +
+geom_point(data=d, mapping=aes(x=p%%16, y=p%/%16, shape=p), size=5, fill="red") +
+geom_text(data=d, mapping=aes(x=p%%16, y=p%/%16+0.25, label=p), size=3) +
+theme_bw() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank()) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+```
+<font size = 2> Source: <a href = "http://sape.inf.usi.ch/quick-reference/ggplot2/shape">http://sape.inf.usi.ch/quick-reference/ggplot2/shape </font>
+-->
+
