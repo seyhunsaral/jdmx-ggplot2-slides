@@ -1,2 +1,0 @@
-library("knitr")
-library("xaringan")
