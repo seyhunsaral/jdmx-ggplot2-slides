@@ -606,6 +606,13 @@ facet_grid(category ~ .)
 ---
 # Ex3 - Create the plot
 ```{r, out.width = '60%', echo = FALSE}
+nobel_winners_summary  <- nobel_winners %>%
+  group_by(category)  %>%
+  summarise( mean_age_awarded = mean(age_awarded, na.rm = TRUE), sd_age_awarded = sd(age_awarded, na.rm = TRUE) )  %>%
+  arrange(mean_age_awarded) 
+
+
+
 ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
     geom_vline( xintercept = mean(nobel_winners$age_awarded, na.rm = TRUE), color = "gray20", linetype = "dashed") +
     geom_jitter(alpha = 0.3, width = 0.0, height = 0.1, size = 2) +
