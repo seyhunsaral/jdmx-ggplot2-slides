@@ -161,7 +161,7 @@ ggplot(happiness_data, aes( x = gdp_per_capita, y = happiness)) +
   geom_point(color = "red")
 ```
 ---
-#  Coloring vs. Mapping to a Color
+###  Coloring vs. Mapping to a Color
 * If we want to map a variable to the color, we use `aes()`
 ```{r , out.width = '50%', fig.align = 'center'}
 ggplot(happiness_data, aes(x = gdp_per_capita,
@@ -473,23 +473,44 @@ unique(nobel_winners$laureate_type)
 nobel_winners_ind  <- nobel_winners  %>%
   filter(laureate_type == "Individual")
 
-ggplot(nobel_winners, aes(x = category, fill = gender))+
+ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
   geom_bar()
 ```
 
 ---
-### Different possibilities
+### Different positionings
 ```{r, out.width = '50%'}
 ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
   geom_bar(position = "dodge")
 ```
 ---
 
-### Different possibilities
+### Different positionings
 ```{r, out.width = '50%'}
 ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
   geom_bar(position = "fill")
 ```
+---
+### Flipping the x and the y axis (Step 7)
+* `coord_flip()` does the trick easily
+```{r, out.width = '50%'}
+ggplot(nobel_winners_ind, aes(x = category, fill = gender))+
+  geom_bar(position = "dodge")+
+  coord_flip()
+```
+---
+### Bar ordering (Step 8)
+* Bars are ordered by the order of the categorical variable (factor)
+* `forcats` package have some useful tools that we can plug directly into the plot
+
+```{r, out.width = '50%'}
+library(forcats)
+ggplot(data = nobel_winners_ind, aes(x = fct_relevel(category, c("Economics", "Peace", "Literature", "Chemistry", "Physics", "Medicine")))) +
+  geom_bar(aes(fill = gender)) +
+  coord_flip()
+```
+---
+# You can try out different bar positionings on the file(Step 9)
 ---
 ### A continous and a categorical variable: `geom_boxplot()`
 * Summarized by  five parameters
@@ -498,6 +519,7 @@ ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
   geom_boxplot()
 ```
 ---
+
 ### A continuous and a categorical variable: `geom_point()`?
 ```{r, out.width = '50%'}
 ggplot(nobel_winners, aes(y = age_awarded, x = category)) +
@@ -582,6 +604,17 @@ scale_y_continuous(limits = c(15,99)) +
 facet_grid(category ~ .)
 ```
 ---
+# Ex3 - Create the plot
+```{r, out.width = '60%', echo = FALSE}
+ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
+    geom_vline( xintercept = mean(nobel_winners$age_awarded, na.rm = TRUE), color = "gray20", linetype = "dashed") +
+    geom_jitter(alpha = 0.3, width = 0.0, height = 0.1, size = 2) +
+    geom_point(data = nobel_winners_summary,
+               aes(x =mean_age_awarded), size = 10) +
+  guides(fill = FALSE, color = FALSE)
+```
+---
+---
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9, out.width = '100%'}
 
 nobel_winners_summary  <- nobel_winners %>%
@@ -616,23 +649,24 @@ geom_jitter(alpha = 0.3, width = 0.1, height = 0, size = 2) +
   annotate("text", x = 7.2, y = 28, label = "Average of all disciplines") +
   geom_curve(x = 7, y = 30, xend = 6.7, yend = 58, curvature = 0.2, size = 0.3, color = "black", arrow = arrow(length = unit(0.03, "npc"))) +
   annotate("text", x = 7.5, y = 28, label="") + # this is a trick
-  coord_flip() 
+  coord_flip() +
+  theme_economist()
   ```
 ---
-### Step 1 - Creating jittered plot
+### Step 1 - Creating jittered points
 ```{r, echo = FALSE, out.width = '70%'}
 ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
     geom_jitter(alpha = 0.3, width = 0.0, height = 0.1, size = 2)
 ```
 
 ---
-### Step 2 - Creating summary statistics 
+### Step 2 - Creating the summary statistics 
 * Average of all disciplines
 * Average for each discipline
 * Minimum, Maximum, 
 ---
 
-### Step 2 - Creating summary statistics 
+### Step 2 - Creating the summary statistics 
 * Average of all disciplines
 ```{r}
 average_age  <- mean(nobel_winners$age_awarded, na.rm = TRUE)
@@ -648,7 +682,7 @@ nobel_winners_summary  <- nobel_winners %>%
 print(nobel_winners_summary)
 ```
 ---
-### Step 3 - Adding mean per discipline layer
+### Step 3 - Adding mean per discipline line
 ```{r}
 ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
     geom_jitter(alpha = 0.3, width = 0.0, height = 0.1, size = 2) +
@@ -657,7 +691,7 @@ ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
 ```
 
 ---
-### Step 4 - Adding average layer
+### Step 4 - Adding the point layer for averages
 ```{r}
 ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
     geom_vline( xintercept = mean(nobel_winners$age_awarded, na.rm = TRUE), color = "gray20", linetype = "dashed") +
@@ -666,7 +700,69 @@ ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
                aes(x =mean_age_awarded), size = 10)
 
 ```
+---
+### Step 5 - Adding a text layer
 
+```{r, out.width = '70%'}
+ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
+    geom_vline( xintercept = mean(nobel_winners$age_awarded, na.rm = TRUE), color = "gray20", linetype = "dashed") +
+    geom_jitter(alpha = 0.3, width = 0.0, height = 0.1, size = 2) +
+    geom_point(data = nobel_winners_summary,
+               aes(x =mean_age_awarded), size = 10) +
+    geom_text_repel(aes(label = full_name), data = filter(nobel_winners, age_awarded == min(nobel_winners$age_awarded, na.rm = TRUE) | age_awarded == max(nobel_winners$age_awarded, na.rm = TRUE)), color = "black")
+```
+---
+
+### Step 6 - Adding a theme
+
+```{r, out.width = '70%' }
+ggplot(nobel_winners, aes(y = category, x = age_awarded, color = category))+
+    geom_vline( xintercept = mean(nobel_winners$age_awarded, na.rm = TRUE), color = "gray20", linetype = "dashed") +
+    geom_jitter(alpha = 0.3, width = 0.0, height = 0.1, size = 2) +
+    geom_point(data = nobel_winners_summary,
+               aes(x =mean_age_awarded), size = 10) +
+    geom_text_repel(aes(label = full_name), data = filter(nobel_winners, age_awarded == min(nobel_winners$age_awarded, na.rm = TRUE) | age_awarded == max(nobel_winners$age_awarded, na.rm = TRUE)), color = "black") +
+ theme_economist() +
+  guides(fill=FALSE, color = FALSE)
+```
+---
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 9, out.width = '100%'}
+
+nobel_winners_summary  <- nobel_winners %>%
+  group_by(category)  %>%
+  summarise( mean_age_awarded = mean(age_awarded, na.rm = TRUE), sd_age_awarded = sd(age_awarded, na.rm = TRUE) )  %>%
+  arrange(mean_age_awarded) 
+
+
+#nobel_winners  %>% summarise( mean = mean(age_awarded, na.rm = TRUE), min = min(age_awarded, na.rm = TRUE), max = max(age_awarded, na.rm = TRUE))  
+
+
+nobel_winners  <- nobel_winners  %>% mutate( category = factor(category, levels = nobel_winners_summary$category))
+nobel_winners_summary  <- nobel_winners_summary  %>% mutate( category = factor(category, levels = nobel_winners_summary$category))
+
+ggplot(nobel_winners, aes(x = category, y = age_awarded, color = category))+
+      geom_hline( yintercept = mean(nobel_winners$age_awarded, na.rm = TRUE), color = "gray20", linetype = "dashed") +
+geom_jitter(alpha = 0.3, width = 0.1, height = 0, size = 2) +
+  geom_point(data = nobel_winners_summary, aes(y = mean_age_awarded, fill = category), color = "black", size = 10, pch=21, alpha = 0.9) +
+    geom_text_repel(data = filter(nobel_winners, age_awarded == min(nobel_winners$age_awarded, na.rm = TRUE) | age_awarded == max(nobel_winners$age_awarded, na.rm = TRUE)), aes(label = full_name),
+                  color = "black",
+                  xlim = c(4.5,5.5),
+                  arrow = arrow(length = unit(0.03, "npc"))) +
+#  geom_line(ylim = 40) +
+    labs(title = "Nobel Prize winners by age and discipline",
+         subtitle = "The age of prize winners at the time they won the prize",
+         y = "Age awarded", x = "") +
+  theme_bw() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line ( size = .5)) +  
+  guides(fill = FALSE, color = FALSE) +
+  scale_y_continuous( limits = c(15,90), breaks = seq(10,90,10)) +
+  annotate("text", x = 7.2, y = 28, label = "Average of all disciplines") +
+  geom_curve(x = 7, y = 30, xend = 6.7, yend = 58, curvature = 0.2, size = 0.3, color = "black", arrow = arrow(length = unit(0.03, "npc"))) +
+  annotate("text", x = 7.5, y = 28, label="") + # this is a trick
+  coord_flip() +
+  theme_economist()
+  ```
 ---
 # World Map
 ```{r}
@@ -707,6 +803,8 @@ ggplot() +
 ```
 ---
 ### Final Remarks
+- `ggplot2` is a powerful, flexible and consistent package that produce aesthetically pleasing graphics
+--
 
 - `ggplot2` is straightforward as long as you have the right data structure.
 
@@ -716,3 +814,24 @@ ggplot() +
 ![Saw](./img/meme1.jpg)
 
 ]
+---
+### Final Remarks
+- `ggplot2` is a powerful, flexible and consistent package that produce aesthetically pleasing graphics
+
+- `ggplot2` is straightforward as long as you have the right data structure.
+
+
+- My workflow is:
+    - Sketch the plot
+    - Determine the mappings
+    - Create necessary side data
+    - Layer up!
+    
+- We didn't cover `facets`, `themes` and `guides`.    Participant is encouraged to refer to the documentation
+---
+# Thank you
+
+###Ali Seyhun Saral  
+#### saral@coll.mpg.de 
+
+#### @seyhunsaral
